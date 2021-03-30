@@ -1,5 +1,6 @@
 using System;
 using Akka.Actor;
+using Akka.Cluster;
 using Akka.Cluster.Tools.PublishSubscribe;
 
 namespace DistribPubSub
@@ -10,7 +11,10 @@ namespace DistribPubSub
 
         public ChatActor()
         {
-            // Receive<>
+            Receive<SubscribeAck>(x => {
+                Console.WriteLine($"Subscribed ack for topic {x.Subscribe.Topic}");
+                Become(Subscribed);
+            });
         }
         
         protected override void PreStart()
@@ -25,7 +29,22 @@ namespace DistribPubSub
             }
             base.PreStart();
         }
+
+        private int GetPort()
+        {
+            // DA imate nacin kako unutar lokalnog sustava dobiti port i ip
+            Address address = ((ClusterActorRefProvider)((ExtendedActorSystem)Context.System).Provider).Transport.DefaultAddress;
+            return address.Port.Value;
+        }
         
-        
+        private void Subscribed()
+        {
+            Receive<Messages.Msg>(x => HandleMsg(x));
+        }
+
+        private void HandleMsg(Messages.Msg msg)
+        {
+            Console.WriteLine($"{Self} (with port: {GetPort()}) got {msg.Text} from {Sender}");
+        }
     }
 }
