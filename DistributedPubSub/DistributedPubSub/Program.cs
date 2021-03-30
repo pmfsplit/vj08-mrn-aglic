@@ -64,6 +64,7 @@ namespace DistribPubSub
                 }
             } while (text.ToLower() != "q");
 
+            // ugasimo actor sustave
             var tasks = systems.Select(sys => sys.Terminate());
             Task.WaitAll(tasks.ToArray());
         }
