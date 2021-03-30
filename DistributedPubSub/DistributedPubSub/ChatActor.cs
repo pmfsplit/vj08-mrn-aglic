@@ -11,12 +11,13 @@ namespace DistribPubSub
 
         public ChatActor()
         {
-            Receive<SubscribeAck>(x => {
+            Receive<SubscribeAck>(x =>
+            {
                 Console.WriteLine($"Subscribed ack for topic {x.Subscribe.Topic}");
                 Become(Subscribed);
             });
         }
-        
+
         protected override void PreStart()
         {
             mediator.Mediator.Tell(new Subscribe("general", Self));
@@ -27,18 +28,21 @@ namespace DistribPubSub
                 Console.WriteLine("HELLO................................");
                 mediator.Mediator.Tell(new Subscribe("specific", Self));
             }
+
             base.PreStart();
         }
 
         private int GetPort()
         {
             // DA imate nacin kako unutar lokalnog sustava dobiti port i ip
-            Address address = ((ClusterActorRefProvider)((ExtendedActorSystem)Context.System).Provider).Transport.DefaultAddress;
+            Address address = ((ClusterActorRefProvider) ((ExtendedActorSystem) Context.System).Provider).Transport
+                .DefaultAddress;
             return address.Port.Value;
         }
-        
+
         private void Subscribed()
         {
+            Receive<SubscribeAck>(x => Console.WriteLine($"Subscribed ack for topic {x.Subscribe.Topic}"));
             Receive<Messages.Msg>(x => HandleMsg(x));
         }
 
