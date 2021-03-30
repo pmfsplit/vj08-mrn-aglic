@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
+using Akka.Cluster.Tools.PublishSubscribe;
 using Akka.Configuration;
 using AkkaConfigProvider;
 
@@ -14,6 +16,8 @@ namespace DistribPubSub
             var config = configProvider.GetAkkaConfig<MyAkkaConfig>();
 
             var ports = new[] {12000, 12001};
+
+            List<DistributedPubSub> mediators = new List<DistributedPubSub>();
             
             // Pokreniti ćemo 4 čvora unutar ovog jednog projekta da vidimo da se i to može.
             // Važno je da kreiramo 4 actor sustava
@@ -26,6 +30,10 @@ namespace DistribPubSub
                 var system = ActorSystem.Create("DisPubSubExample", config);
                 var props = Props.Create(() => new ChatActor());
                 system.ActorOf(props);
+                
+                DistributedPubSub mediator = DistributedPubSub.Get(system);
+                
+                mediators.Add(mediator);
             }
 
             Console.WriteLine("Hello World!");
