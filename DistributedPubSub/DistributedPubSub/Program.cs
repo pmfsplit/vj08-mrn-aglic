@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Cluster.Tools.PublishSubscribe;
 using Akka.Configuration;
@@ -19,6 +20,8 @@ namespace DistribPubSub
             var ports = new[] {12000, 12001};
 
             List<DistributedPubSub> mediators = new List<DistributedPubSub>();
+
+            List<ActorSystem> systems = new List<ActorSystem>();
             
             // Pokreniti ćemo 4 čvora unutar ovog jednog projekta da vidimo da se i to može.
             // Važno je da kreiramo 4 actor sustava
@@ -35,6 +38,7 @@ namespace DistribPubSub
                 DistributedPubSub mediator = DistributedPubSub.Get(system);
                 
                 mediators.Add(mediator);
+                systems.Add(system);
             }
 
             string text = String.Empty;
@@ -59,6 +63,9 @@ namespace DistribPubSub
                     mediator.Mediator.Tell(new Publish(topic, new Messages.Msg(text)));
                 }
             } while (text.ToLower() != "q");
+
+            var tasks = systems.Select(sys => sys.Terminate());
+            Task.WaitAll(tasks.ToArray());
         }
     }
 }
