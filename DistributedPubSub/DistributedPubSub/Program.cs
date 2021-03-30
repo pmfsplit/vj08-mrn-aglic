@@ -10,6 +10,7 @@ namespace DistribPubSub
 {
     class Program
     {
+        public static Random Rnd = new Random();
         static void Main(string[] args)
         {
             var configProvider = new ConfigProvider();
