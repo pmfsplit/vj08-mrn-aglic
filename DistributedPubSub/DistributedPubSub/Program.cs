@@ -36,7 +36,25 @@ namespace DistribPubSub
                 mediators.Add(mediator);
             }
 
-            Console.WriteLine("Hello World!");
+            string text = String.Empty;
+
+            do
+            {
+                var cmd = Console.ReadLine();
+                // cmd should be, e.g. general hello 1 -> 
+                // which means that topic is "general", text is "hello",
+                // 1 is the index that will be used to get a mediator from the list
+                // called mediators
+                var parsed = cmd.Split(' ');
+                
+                var topic = parsed[0];
+                text = parsed[1];
+                var index = int.Parse(parsed[2]);
+
+                if(text.ToLower() != "q")
+                {
+                }
+            } while (text.ToLower() != "q");
         }
     }
 }
