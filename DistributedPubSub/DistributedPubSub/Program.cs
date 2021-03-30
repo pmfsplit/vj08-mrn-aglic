@@ -54,6 +54,9 @@ namespace DistribPubSub
 
                 if(text.ToLower() != "q")
                 {
+                    var mediator = mediators[index];
+                    
+                    mediator.Mediator.Tell(new Publish(topic, new Messages.Msg(text)));
                 }
             } while (text.ToLower() != "q");
         }
