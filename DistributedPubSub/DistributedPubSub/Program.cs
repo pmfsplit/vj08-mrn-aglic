@@ -31,7 +31,7 @@ namespace DistribPubSub
                 var akkaConfig = ConfigurationFactory
                     .ParseString($"akka.remote.dot-netty.tcp.port={port}")
                     .WithFallback(config);
-                var system = ActorSystem.Create("DisPubSubExample", config);
+                var system = ActorSystem.Create("DisPubSubExample", akkaConfig);
                 var props = Props.Create(() => new ChatActor());
                 system.ActorOf(props);
                 
