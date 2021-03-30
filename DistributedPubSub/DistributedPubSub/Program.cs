@@ -27,7 +27,7 @@ namespace DistribPubSub
             // Važno je da kreiramo 4 actor sustava
             foreach (var el in Enumerable.Range(0, 4))
             {
-                var port = el > ports.Length ? 0 : ports[el];
+                var port = el >= ports.Length ? 0 : ports[el];
                 var akkaConfig = ConfigurationFactory
                     .ParseString($"akka.remote.dot-netty.tcp.port={port}")
                     .WithFallback(config);
@@ -46,6 +46,9 @@ namespace DistribPubSub
             do
             {
                 var cmd = Console.ReadLine();
+
+                if (cmd == "q") break;
+                
                 // cmd should be, e.g. general hello 1 -> 
                 // which means that topic is "general", text is "hello",
                 // 1 is the index that will be used to get a mediator from the list
